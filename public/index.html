@@ -27,8 +27,10 @@
       var messages = document.querySelector('#messages');
       var input    = document.querySelector('#m');
       var form     = input.parentElement;
+      
+      var name = window.prompt('What is your name?', 'Maria Ryabushkina');
 
-      socket.emit('name', 'Maria Ryabushkina');
+      socket.emit('name', name);
 
       form.addEventListener('submit', function (e) {
         e.preventDefault();
@@ -36,9 +38,13 @@
         input.value = '';
       });
 
-      socket.on('incoming', (msg) => {
-        messages.insertAdjacentHTML('beforeEnd', `<li><b>${msg.name}</b>: <i>${msg.text}</i></li>`)
-      });
+      socket.on('incoming', renderMessage);
+      
+      socket.on('history', history => history.forEach(renderMessage));
+      
+      function renderMessage(msg) {
+          messages.insertAdjacentHTML('beforeEnd', `<li><b>${msg.name}</b>: <i>${msg.text}</i></li>`)
+      }
     </script>
 </body>
 </html>
